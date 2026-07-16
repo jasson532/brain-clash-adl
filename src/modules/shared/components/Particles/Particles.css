@@ -1,0 +1,16 @@
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.particles__dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+.particles__dot:nth-child(odd) { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+.particles__dot:nth-child(3n) { background: var(--warning); box-shadow: 0 0 8px var(--warning-glow); }

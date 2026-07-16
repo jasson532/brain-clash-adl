@@ -1,0 +1,100 @@
+.admin-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.admin-modal__card {
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin-modal__title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--primary);
+  text-align: center;
+}
+
+.admin-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.admin-modal__field label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-modal__field input {
+  padding: 0.7rem 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: var(--font-body);
+  outline: none;
+}
+
+.admin-modal__field input:focus {
+  border-color: var(--primary);
+}
+
+.admin-modal__field input::placeholder {
+  color: var(--text-muted);
+}
+
+.admin-modal__error {
+  text-align: center;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.admin-modal__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.admin-modal__btn--primary,
+.admin-modal__btn--secondary {
+  flex: 1;
+  padding: 0.7rem;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.admin-modal__btn--primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--bg-deep);
+}
+
+.admin-modal__btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-modal__btn--secondary {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}

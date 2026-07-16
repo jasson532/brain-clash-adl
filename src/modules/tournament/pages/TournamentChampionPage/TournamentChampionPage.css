@@ -1,0 +1,292 @@
+.champ {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.champ__loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+}
+
+/* Particles */
+.champ__particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.champ__particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--warning);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--warning-glow);
+}
+.champ__particle:nth-child(odd) { background: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
+.champ__particle:nth-child(3n) { background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+
+/* Content */
+.champ__content {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 700px;
+  width: 100%;
+}
+
+.champ__back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.champ__back:hover { color: var(--warning); }
+
+.champ__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  text-align: center;
+  background: linear-gradient(135deg, var(--warning), var(--accent));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px var(--warning-glow));
+}
+
+.champ__subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Podium */
+.champ__podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.champ__podium-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.champ__podium-slot--first { order: 2; }
+.champ__podium-slot--second { order: 1; }
+.champ__podium-slot--third { order: 3; }
+
+.champ__crown {
+  font-size: 2rem;
+  animation: crown-float 2s ease-in-out infinite;
+}
+@keyframes crown-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.champ__medal {
+  font-size: 1.5rem;
+}
+
+.champ__team-avatar {
+  font-size: 2.5rem;
+}
+.champ__team-avatar--big {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 15px var(--warning-glow));
+}
+
+.champ__team-name {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 120px;
+  word-wrap: break-word;
+}
+.champ__team-name--champion {
+  font-size: 1.1rem;
+  max-width: 160px;
+}
+
+.champ__team-score {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.champ__team-score--big {
+  font-size: 1.1rem;
+  color: var(--warning);
+}
+
+/* Podium blocks */
+.champ__podium-block {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--bg-deep);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  margin-top: 0.5rem;
+}
+.champ__podium-block--first {
+  height: 100px;
+  background: linear-gradient(180deg, var(--warning), #cc8800);
+  box-shadow: 0 0 30px var(--warning-glow);
+}
+.champ__podium-block--second {
+  height: 70px;
+  background: linear-gradient(180deg, #c0c0c0, #888888);
+}
+.champ__podium-block--third {
+  height: 50px;
+  background: linear-gradient(180deg, #cd7f32, #8b4513);
+}
+
+/* 4th place */
+.champ__fourth {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Actions */
+.champ__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.champ__btn {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, var(--warning), var(--accent));
+  color: var(--bg-deep);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.champ__btn--secondary {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+@media (max-width: 500px) {
+  .champ__podium { gap: 0.5rem; }
+  .champ__podium-block { width: 80px; }
+  .champ__podium-block--first { height: 80px; }
+  .champ__podium-block--second { height: 55px; }
+  .champ__podium-block--third { height: 40px; }
+  .champ__team-avatar { font-size: 2rem; }
+  .champ__team-avatar--big { font-size: 2.5rem; }
+}
+
+/* Team Breakdown */
+.champ__breakdown {
+  width: 100%;
+  margin-top: 2rem;
+}
+.champ__breakdown-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+.champ__breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.champ__team-card {
+  background: var(--bg-card);
+  border: 2px solid;
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  transition: transform 0.2s;
+}
+.champ__team-card:hover {
+  transform: translateY(-2px);
+}
+
+.champ__team-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.champ__team-card-pos {
+  font-size: 1.3rem;
+}
+.champ__team-card-avatar {
+  font-size: 1.5rem;
+}
+.champ__team-card-name {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+}
+.champ__team-card-total {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.champ__team-card-participants {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.champ__participant-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  background: var(--bg-deep);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+.champ__participant-info {
+  flex: 1;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.champ__participant-score {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--warning);
+  min-width: 50px;
+  text-align: right;
+}
+.champ__participant-stats {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  min-width: 55px;
+  text-align: right;
+}
