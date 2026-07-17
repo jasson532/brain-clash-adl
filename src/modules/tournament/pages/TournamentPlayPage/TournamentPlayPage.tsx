@@ -18,7 +18,7 @@ import { getRandomQuestions, shuffleAnswers, calculatePoints } from 'modules/sha
 import { useAnsweredQuestions } from 'modules/shared/hooks/useAnsweredQuestions';
 import { useTimer } from 'modules/shared/hooks/useTimer';
 import { useSound } from 'modules/shared/hooks/useSound';
-import type { Tournament, TrnTeam, TrnParticipant, TrnRound, TrnMatch } from 'modules/shared/types/tournament.types';
+import type { Tournament, TrnTeam, TrnParticipant, TrnMatch } from 'modules/shared/types/tournament.types';
 import { TRN_TEAM_COLORS, TRN_TEAM_AVATARS } from 'modules/shared/types/tournament.types';
 import type { LocalQuestion } from 'modules/shared/services/questions.service';
 import Countdown from 'modules/shared/components/Countdown/Countdown';

@@ -9,7 +9,7 @@ import {
   getTrnTeamsByTournament,
   getTrnParticipantsByTeam,
 } from 'modules/shared/services/supabase/tournament.service';
-import type { Tournament, TrnRound, TrnMatch, TrnMatchScore, TrnTeam, TrnParticipant } from 'modules/shared/types/tournament.types';
+import type { Tournament, TrnRound, TrnMatch, TrnMatchScore, TrnTeam } from 'modules/shared/types/tournament.types';
 import './TournamentMatchHistoryPage.css';
 
 interface MatchDetail {
