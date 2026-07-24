@@ -1,0 +1,187 @@
+.pres {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Progress */
+.pres__progress {
+  height: 4px;
+  background: var(--bg-card);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+.pres__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Slide */
+.pres__slide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 2rem 0;
+}
+
+.pres__icon {
+  font-size: 4rem;
+  filter: drop-shadow(0 0 20px var(--primary-glow));
+}
+
+.pres__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pres__subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.pres__content {
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+  max-width: 550px;
+}
+
+.pres__highlight {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 170, 0, 0.1);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--warning);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Scoring table */
+.pres__scoring {
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.pres__scoring-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+.pres__scoring-row--highlight {
+  background: rgba(0, 245, 255, 0.08);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+}
+.pres__scoring-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.pres__scoring-value {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--warning);
+}
+.pres__scoring-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 170, 0, 0.1);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: var(--radius-md);
+  margin-top: 0.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.pres__scoring-total-value {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--warning);
+}
+
+/* Tips */
+.pres__tips {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.pres__tip {
+  padding: 0.6rem 1rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-align: left;
+}
+.pres__tip:nth-child(even) {
+  background: rgba(0, 245, 255, 0.05);
+}
+
+/* Navigation */
+.pres__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+.pres__nav-counter {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.pres__nav-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pres__nav-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.pres__nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.pres__nav-btn--next {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--bg-deep);
+  border: none;
+  font-weight: 700;
+}
+.pres__nav-btn--start {
+  background: linear-gradient(135deg, var(--warning), var(--accent));
+  color: var(--bg-deep);
+  border: none;
+  font-weight: 700;
+}

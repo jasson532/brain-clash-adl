@@ -10,6 +10,7 @@
 SET session_replication_role = 'replica';
 
 -- 2. Limpiar tablas TORNEO (orden por foreign keys)
+TRUNCATE TABLE public.trn_game_sessions CASCADE;
 TRUNCATE TABLE public.trn_live_scores CASCADE;
 TRUNCATE TABLE public.trn_match_scores CASCADE;
 TRUNCATE TABLE public.trn_matches CASCADE;

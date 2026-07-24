@@ -165,3 +165,18 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.home__presentation-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.home__presentation-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

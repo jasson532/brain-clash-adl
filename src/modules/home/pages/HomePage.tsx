@@ -75,6 +75,15 @@ export default function HomePage() {
           </motion.button>
         </div>
 
+        <motion.button
+          className="home__presentation-btn"
+          onClick={() => navigate('/presentation')}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          📋 ¿Cómo se juega?
+        </motion.button>
+
         <p className="home__footer">
           Hecho con 💜 por ADL
         </p>

@@ -20,6 +20,7 @@ const TournamentMatchPage = lazy(() => import('./modules/tournament/pages/Tourna
 const TournamentPlayPage = lazy(() => import('./modules/tournament/pages/TournamentPlayPage/TournamentPlayPage'));
 const TournamentMatchHistoryPage = lazy(() => import('./modules/tournament/pages/TournamentMatchHistoryPage/TournamentMatchHistoryPage'));
 const TournamentChampionPage = lazy(() => import('./modules/tournament/pages/TournamentChampionPage/TournamentChampionPage'));
+const TournamentPresentationPage = lazy(() => import('./modules/tournament/pages/TournamentPresentationPage/TournamentPresentationPage'));
 
 function LoadingFallback() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/tournament/:id/play" element={<TournamentPlayPage />} />
             <Route path="/tournament/:id/history" element={<TournamentMatchHistoryPage />} />
             <Route path="/tournament/:id/champion" element={<TournamentChampionPage />} />
+            <Route path="/presentation" element={<TournamentPresentationPage />} />
             <Route path="/tournament/:id/match/:matchId" element={<TournamentMatchPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
