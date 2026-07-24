@@ -58,6 +58,7 @@ export function shuffleAnswers(question: LocalQuestion): string[] {
  * Calculate points based on difficulty, time remaining, streak, 
  * number of questions selected, and time per question selected.
  * 
+ * Used when participant chooses their own config (free mode).
  * More questions = less points per question (penalty for playing safe)
  * Less time = more points per question (reward for risk)
  */
@@ -86,6 +87,45 @@ export function calculatePoints(
   const timeRiskBonus = 1 + ((50 - totalTime) / 30) * 0.5;
 
   return Math.round((basePoints + timeBonus) * streakMultiplier * questionsPenalty * timeRiskBonus);
+}
+
+/**
+ * Calculate points for tournament-locked config (Kahoot-style scoring).
+ * 
+ * Used when the tournament defines difficulty, questions, and time globally.
+ * Since everyone has the same conditions, the only differentiator is SPEED.
+ * 
+ * Formula:
+ *   points = basePoints + speedBonus + streakBonus
+ * 
+ * - basePoints: fixed per difficulty (easy=100, medium=200, hard=300)
+ * - speedBonus: 0 to 100 points based on how fast you answer (linear)
+ *   - Answer instantly = 100 bonus
+ *   - Answer at last second = 0 bonus
+ * - streakBonus: +20 points per consecutive correct answer (max +100)
+ * 
+ * Max per question: 300 (hard) + 100 (speed) + 100 (streak) = 500
+ * Min per question: 100 (easy) + 0 (slow) + 0 (no streak) = 100
+ */
+export function calculateTournamentPoints(
+  difficulty: string,
+  timeRemaining: number,
+  totalTime: number,
+  streak: number,
+): number {
+  // Base points by difficulty (fixed, same for everyone)
+  const basePoints = difficulty === 'hard' ? 300 : difficulty === 'medium' ? 200 : 100;
+
+  // Speed bonus: linear from 0 to 100 based on remaining time
+  // timeRemaining/totalTime = 1.0 (instant answer) → 100 points
+  // timeRemaining/totalTime = 0.0 (last second) → 0 points
+  const speedRatio = Math.max(0, Math.min(1, timeRemaining / totalTime));
+  const speedBonus = Math.round(speedRatio * 100);
+
+  // Streak bonus: +20 per consecutive correct, capped at 100 (5+ streak)
+  const streakBonus = Math.min(streak * 20, 100);
+
+  return basePoints + speedBonus + streakBonus;
 }
 
 function shuffleArray<T>(array: T[]): T[] {

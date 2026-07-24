@@ -18,7 +18,7 @@ import {
   getActiveGameSession,
 } from 'modules/shared/services/supabase/tournament.service';
 import { supabase } from 'modules/shared/services/supabase/supabaseClient';
-import { getRandomQuestions, shuffleAnswers, calculatePoints } from 'modules/shared/services/questions.service';
+import { getRandomQuestions, shuffleAnswers, calculatePoints, calculateTournamentPoints } from 'modules/shared/services/questions.service';
 import allQuestionsData from '../../../../data/questions.json';
 import { useAnsweredQuestions } from 'modules/shared/hooks/useAnsweredQuestions';
 import { useTimer } from 'modules/shared/hooks/useTimer';
@@ -410,7 +410,11 @@ export default function TournamentPlayPage() {
 
     if (isCorrect) {
       newStreak = streak + 1;
-      const points = calculatePoints(currentQuestion.difficulty, timeRemaining, configTime, streak, configQuestions);
+      // Use tournament scoring when config is globally set, otherwise free-mode scoring
+      const isTournamentLocked = !!(tournament?.config_difficulty || tournament?.config_questions_per_game || tournament?.config_time_per_question);
+      const points = isTournamentLocked
+        ? calculateTournamentPoints(currentQuestion.difficulty, timeRemaining, configTime, streak)
+        : calculatePoints(currentQuestion.difficulty, timeRemaining, configTime, streak, configQuestions);
       newScore = score + points;
       newCorrect = correctAnswers + 1;
       setScore(newScore);
