@@ -114,6 +114,7 @@ export default function TournamentPlayPage() {
         // Apply tournament-level config if set
         if (trn.config_difficulty) setConfigDifficulty(trn.config_difficulty);
         if (trn.config_questions_per_game) setConfigQuestions(trn.config_questions_per_game);
+        if (trn.config_time_per_question) setConfigTime(trn.config_time_per_question);
 
         const teams = await getTrnTeamsByTournament(tournamentId);
         const participantsWithTeams: ParticipantWithTeam[] = [];
@@ -756,6 +757,7 @@ export default function TournamentPlayPage() {
   if (step === 'configure') {
     const diffLocked = !!tournament?.config_difficulty;
     const questionsLocked = !!tournament?.config_questions_per_game;
+    const timeLocked = !!tournament?.config_time_per_question;
 
     return (
       <div className="trnplay">
@@ -780,8 +782,8 @@ export default function TournamentPlayPage() {
           </div>
 
           <div className="trnplay__config-field">
-            <label>Tiempo por pregunta: <strong>{configTime}s</strong> <span className="trnplay__config-hint-inline">{configTime <= 25 ? '(máx puntos)' : configTime >= 45 ? '(mín puntos)' : ''}</span></label>
-            <input type="range" min={20} max={50} step={5} value={configTime} onChange={(e) => setConfigTime(Number(e.target.value))} />
+            <label>Tiempo por pregunta: <strong>{configTime}s</strong> {timeLocked ? <span className="trnplay__locked-badge">🔒 Definida por el torneo</span> : <span className="trnplay__config-hint-inline">{configTime <= 25 ? '(máx puntos)' : configTime >= 45 ? '(mín puntos)' : ''}</span>}</label>
+            <input type="range" min={20} max={50} step={5} value={configTime} onChange={(e) => setConfigTime(Number(e.target.value))} disabled={timeLocked} />
           </div>
 
           <motion.button className="trnplay__start-btn" onClick={startPlaying} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} disabled={isLoading}>

@@ -21,6 +21,7 @@ export default function TournamentListPage() {
   const [newMaxGames, setNewMaxGames] = useState(3);
   const [newDifficulty, setNewDifficulty] = useState<string | null>(null);
   const [newQuestionsPerGame, setNewQuestionsPerGame] = useState<number | null>(null);
+  const [newTimePerQuestion, setNewTimePerQuestion] = useState<number | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => { loadTournaments(); }, []);
@@ -48,6 +49,7 @@ export default function TournamentListPage() {
         max_games_per_participant: newMaxGames,
         config_difficulty: newDifficulty,
         config_questions_per_game: newQuestionsPerGame,
+        config_time_per_question: newTimePerQuestion,
       });
       setShowCreate(false);
       setNewName('');
@@ -57,6 +59,7 @@ export default function TournamentListPage() {
       setNewMaxGames(3);
       setNewDifficulty(null);
       setNewQuestionsPerGame(null);
+      setNewTimePerQuestion(null);
       await loadTournaments();
     } catch (err) {
       console.error(err);
@@ -224,6 +227,17 @@ export default function TournamentListPage() {
                   <button className={`trnlist__size-btn ${newQuestionsPerGame === 10 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(10)}>10</button>
                   <button className={`trnlist__size-btn ${newQuestionsPerGame === 15 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(15)}>15</button>
                   <button className={`trnlist__size-btn ${newQuestionsPerGame === 20 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(20)}>20</button>
+                </div>
+              </div>
+
+              <div className="trnlist__field">
+                <label>⏱️ Tiempo por pregunta (opcional - si no se define, el participante elige)</label>
+                <div className="trnlist__size-options">
+                  <button className={`trnlist__size-btn ${newTimePerQuestion === null ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewTimePerQuestion(null)}>Libre</button>
+                  <button className={`trnlist__size-btn ${newTimePerQuestion === 20 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewTimePerQuestion(20)}>20s</button>
+                  <button className={`trnlist__size-btn ${newTimePerQuestion === 30 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewTimePerQuestion(30)}>30s</button>
+                  <button className={`trnlist__size-btn ${newTimePerQuestion === 40 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewTimePerQuestion(40)}>40s</button>
+                  <button className={`trnlist__size-btn ${newTimePerQuestion === 50 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewTimePerQuestion(50)}>50s</button>
                 </div>
               </div>
 

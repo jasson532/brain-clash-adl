@@ -24,6 +24,7 @@ interface TournamentInsert {
   max_games_per_participant?: number;
   config_difficulty?: string | null;
   config_questions_per_game?: number | null;
+  config_time_per_question?: number | null;
 }
 
 interface TrnTeamInsert {

@@ -7,3 +7,4 @@
 
 ALTER TABLE public.trn_tournaments ADD COLUMN IF NOT EXISTS config_difficulty TEXT DEFAULT NULL;
 ALTER TABLE public.trn_tournaments ADD COLUMN IF NOT EXISTS config_questions_per_game INTEGER DEFAULT NULL;
+ALTER TABLE public.trn_tournaments ADD COLUMN IF NOT EXISTS config_time_per_question INTEGER DEFAULT NULL;

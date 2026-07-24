@@ -18,6 +18,7 @@ export interface Tournament {
   max_games_per_participant: number;
   config_difficulty: string | null;
   config_questions_per_game: number | null;
+  config_time_per_question: number | null;
   current_round_id: string | null;
   champion_team_id: string | null;
   created_at: string;
