@@ -19,6 +19,8 @@ export default function TournamentListPage() {
   const [newDate, setNewDate] = useState('');
   const [newSize, setNewSize] = useState<TournamentSize>(16);
   const [newMaxGames, setNewMaxGames] = useState(3);
+  const [newDifficulty, setNewDifficulty] = useState<string | null>(null);
+  const [newQuestionsPerGame, setNewQuestionsPerGame] = useState<number | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => { loadTournaments(); }, []);
@@ -44,6 +46,8 @@ export default function TournamentListPage() {
         date: newDate,
         size: newSize,
         max_games_per_participant: newMaxGames,
+        config_difficulty: newDifficulty,
+        config_questions_per_game: newQuestionsPerGame,
       });
       setShowCreate(false);
       setNewName('');
@@ -51,6 +55,8 @@ export default function TournamentListPage() {
       setNewDate('');
       setNewSize(16);
       setNewMaxGames(3);
+      setNewDifficulty(null);
+      setNewQuestionsPerGame(null);
       await loadTournaments();
     } catch (err) {
       console.error(err);
@@ -199,6 +205,26 @@ export default function TournamentListPage() {
                   onChange={(e) => setNewMaxGames(Number(e.target.value))}
                 />
                 <div className="trnlist__range-labels"><span>1</span><span>10</span></div>
+              </div>
+
+              <div className="trnlist__field">
+                <label>🎯 Dificultad (opcional - si no se define, el participante elige)</label>
+                <div className="trnlist__size-options">
+                  <button className={`trnlist__size-btn ${newDifficulty === null ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewDifficulty(null)}>Libre</button>
+                  <button className={`trnlist__size-btn ${newDifficulty === 'easy' ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewDifficulty('easy')}>🟢 Fácil</button>
+                  <button className={`trnlist__size-btn ${newDifficulty === 'medium' ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewDifficulty('medium')}>🟡 Media</button>
+                  <button className={`trnlist__size-btn ${newDifficulty === 'hard' ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewDifficulty('hard')}>🔴 Difícil</button>
+                </div>
+              </div>
+
+              <div className="trnlist__field">
+                <label>❓ Preguntas por partida (opcional - si no se define, el participante elige)</label>
+                <div className="trnlist__size-options">
+                  <button className={`trnlist__size-btn ${newQuestionsPerGame === null ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(null)}>Libre</button>
+                  <button className={`trnlist__size-btn ${newQuestionsPerGame === 10 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(10)}>10</button>
+                  <button className={`trnlist__size-btn ${newQuestionsPerGame === 15 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(15)}>15</button>
+                  <button className={`trnlist__size-btn ${newQuestionsPerGame === 20 ? 'trnlist__size-btn--active' : ''}`} onClick={() => setNewQuestionsPerGame(20)}>20</button>
+                </div>
               </div>
 
               <div className="trnlist__modal-actions">

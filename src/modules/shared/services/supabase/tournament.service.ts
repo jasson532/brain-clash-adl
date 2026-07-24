@@ -22,6 +22,8 @@ interface TournamentInsert {
   date: string;
   size: TournamentSize;
   max_games_per_participant?: number;
+  config_difficulty?: string | null;
+  config_questions_per_game?: number | null;
 }
 
 interface TrnTeamInsert {

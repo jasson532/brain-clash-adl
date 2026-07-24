@@ -111,6 +111,10 @@ export default function TournamentPlayPage() {
         setTournament(trn);
         setMaxGames(trn.max_games_per_participant);
 
+        // Apply tournament-level config if set
+        if (trn.config_difficulty) setConfigDifficulty(trn.config_difficulty);
+        if (trn.config_questions_per_game) setConfigQuestions(trn.config_questions_per_game);
+
         const teams = await getTrnTeamsByTournament(tournamentId);
         const participantsWithTeams: ParticipantWithTeam[] = [];
 
@@ -750,6 +754,9 @@ export default function TournamentPlayPage() {
 
   // STEP 3: Configure game
   if (step === 'configure') {
+    const diffLocked = !!tournament?.config_difficulty;
+    const questionsLocked = !!tournament?.config_questions_per_game;
+
     return (
       <div className="trnplay">
         <button className="trnplay__back" onClick={() => setStep('team-hub')}>← Mi equipo</button>
@@ -758,18 +765,18 @@ export default function TournamentPlayPage() {
           <p className="trnplay__config-hint">Las preguntas serán aleatorias de todas las categorías</p>
 
           <div className="trnplay__config-field">
-            <label>Dificultad</label>
+            <label>Dificultad {diffLocked && <span className="trnplay__locked-badge">🔒 Definida por el torneo</span>}</label>
             <div className="trnplay__difficulty-options">
-              <button className={`trnplay__diff-btn ${configDifficulty === null ? 'trnplay__diff-btn--active' : ''}`} onClick={() => setConfigDifficulty(null)}>🎲 Mixta</button>
-              <button className={`trnplay__diff-btn ${configDifficulty === 'easy' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => setConfigDifficulty('easy')} style={configDifficulty === 'easy' ? { borderColor: '#00ff88' } : {}}>🟢 Fácil<br/><small>100 pts</small></button>
-              <button className={`trnplay__diff-btn ${configDifficulty === 'medium' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => setConfigDifficulty('medium')} style={configDifficulty === 'medium' ? { borderColor: '#ffaa00' } : {}}>🟡 Media<br/><small>200 pts</small></button>
-              <button className={`trnplay__diff-btn ${configDifficulty === 'hard' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => setConfigDifficulty('hard')} style={configDifficulty === 'hard' ? { borderColor: '#ff4466' } : {}}>🔴 Difícil<br/><small>300 pts</small></button>
+              <button className={`trnplay__diff-btn ${configDifficulty === null ? 'trnplay__diff-btn--active' : ''}`} onClick={() => !diffLocked && setConfigDifficulty(null)} disabled={diffLocked}>🎲 Mixta</button>
+              <button className={`trnplay__diff-btn ${configDifficulty === 'easy' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => !diffLocked && setConfigDifficulty('easy')} disabled={diffLocked} style={configDifficulty === 'easy' ? { borderColor: '#00ff88' } : {}}>🟢 Fácil<br/><small>100 pts</small></button>
+              <button className={`trnplay__diff-btn ${configDifficulty === 'medium' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => !diffLocked && setConfigDifficulty('medium')} disabled={diffLocked} style={configDifficulty === 'medium' ? { borderColor: '#ffaa00' } : {}}>🟡 Media<br/><small>200 pts</small></button>
+              <button className={`trnplay__diff-btn ${configDifficulty === 'hard' ? 'trnplay__diff-btn--active' : ''}`} onClick={() => !diffLocked && setConfigDifficulty('hard')} disabled={diffLocked} style={configDifficulty === 'hard' ? { borderColor: '#ff4466' } : {}}>🔴 Difícil<br/><small>300 pts</small></button>
             </div>
           </div>
 
           <div className="trnplay__config-field">
-            <label>Preguntas: <strong>{configQuestions}</strong> <span className="trnplay__config-hint-inline">{configQuestions === 10 ? '(máx puntos)' : configQuestions >= 18 ? '(mín puntos)' : ''}</span></label>
-            <input type="range" min={10} max={20} step={1} value={configQuestions} onChange={(e) => setConfigQuestions(Number(e.target.value))} />
+            <label>Preguntas: <strong>{configQuestions}</strong> {questionsLocked ? <span className="trnplay__locked-badge">🔒 Definida por el torneo</span> : <span className="trnplay__config-hint-inline">{configQuestions === 10 ? '(máx puntos)' : configQuestions >= 18 ? '(mín puntos)' : ''}</span>}</label>
+            <input type="range" min={10} max={20} step={1} value={configQuestions} onChange={(e) => setConfigQuestions(Number(e.target.value))} disabled={questionsLocked} />
           </div>
 
           <div className="trnplay__config-field">

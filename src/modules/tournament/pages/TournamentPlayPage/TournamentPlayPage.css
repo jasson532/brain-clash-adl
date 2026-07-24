@@ -494,3 +494,17 @@
   color: var(--warning);
   font-weight: 400;
 }
+.trnplay__locked-badge {
+  font-size: 0.7rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+.trnplay__diff-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.trnplay__config-field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
