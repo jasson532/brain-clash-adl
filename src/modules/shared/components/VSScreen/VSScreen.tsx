@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import './VSScreen.css';
 
@@ -53,14 +53,16 @@ function playImpact() {
 
 export default function VSScreen({ teamAName, teamAAvatar, teamAColor, teamBName, teamBAvatar, teamBColor, onComplete }: VSScreenProps) {
   const [phase, setPhase] = useState<'enter' | 'vs' | 'exit'>('enter');
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
-    playWhoosh(); // whoosh on enter
-    const t1 = setTimeout(() => { setPhase('vs'); playImpact(); }, 400); // impact on VS appear
+    playWhoosh();
+    const t1 = setTimeout(() => { setPhase('vs'); playImpact(); }, 400);
     const t2 = setTimeout(() => setPhase('exit'), 1800);
-    const t3 = setTimeout(onComplete, 2200);
+    const t3 = setTimeout(() => onCompleteRef.current(), 2200);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [onComplete]);
+  }, []);
 
   return (
     <div className={`vs-screen vs-screen--${phase}`}>

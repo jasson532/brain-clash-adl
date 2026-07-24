@@ -956,3 +956,108 @@ export async function simulateRound(tournamentId: string): Promise<{
 
   return { matchesSimulated: inProgressMatches.length, results };
 }
+
+// ============================================
+// GAME SESSIONS (for page reload recovery)
+// ============================================
+
+export interface GameSessionRow {
+  id: string;
+  tournament_id: string;
+  match_id: string;
+  team_id: string;
+  participant_id: string;
+  question_ids: number[];
+  current_index: number;
+  score: number;
+  correct_answers: number;
+  streak: number;
+  best_streak: number;
+  total_questions: number;
+  config_time: number;
+  config_difficulty: string | null;
+  is_active: boolean;
+}
+
+/**
+ * Create a new game session when participant starts playing
+ */
+export async function createGameSession(session: {
+  tournament_id: string;
+  match_id: string;
+  team_id: string;
+  participant_id: string;
+  question_ids: number[];
+  total_questions: number;
+  config_time: number;
+  config_difficulty: string | null;
+}): Promise<string> {
+  // Delete any previous active session for this participant in this match
+  await supabase
+    .from('trn_game_sessions')
+    .delete()
+    .eq('match_id', session.match_id)
+    .eq('participant_id', session.participant_id)
+    .eq('is_active', true);
+
+  const { data, error } = await supabase
+    .from('trn_game_sessions')
+    .insert({
+      ...session,
+      current_index: 0,
+      score: 0,
+      correct_answers: 0,
+      streak: 0,
+      best_streak: 0,
+      is_active: true,
+    })
+    .select('id')
+    .single();
+
+  if (error) throw new Error(`Error creating game session: ${error.message}`);
+  return data.id;
+}
+
+/**
+ * Update game session progress (called on each answer)
+ */
+export async function updateGameSession(sessionId: string, updates: {
+  current_index: number;
+  score: number;
+  correct_answers: number;
+  streak: number;
+  best_streak: number;
+}): Promise<void> {
+  const { error } = await supabase
+    .from('trn_game_sessions')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', sessionId);
+  if (error) throw new Error(`Error updating game session: ${error.message}`);
+}
+
+/**
+ * Finish a game session (delete it - score is already in trn_match_scores)
+ */
+export async function finishGameSession(sessionId: string): Promise<void> {
+  const { error } = await supabase
+    .from('trn_game_sessions')
+    .delete()
+    .eq('id', sessionId);
+  if (error) throw new Error(`Error finishing game session: ${error.message}`);
+}
+
+/**
+ * Get active game session for a participant in a match
+ */
+export async function getActiveGameSession(matchId: string, participantId: string): Promise<GameSessionRow | null> {
+  const { data, error } = await supabase
+    .from('trn_game_sessions')
+    .select('*')
+    .eq('match_id', matchId)
+    .eq('participant_id', participantId)
+    .eq('is_active', true)
+    .single();
+
+  if (error || !data) return null;
+  return data as GameSessionRow;
+}

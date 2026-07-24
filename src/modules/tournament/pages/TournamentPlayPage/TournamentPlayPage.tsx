@@ -12,9 +12,14 @@ import {
   upsertTrnLiveScore,
   getParticipantMatchGamesCount,
   checkAndAutoFinishMatch,
+  createGameSession,
+  updateGameSession,
+  finishGameSession,
+  getActiveGameSession,
 } from 'modules/shared/services/supabase/tournament.service';
 import { supabase } from 'modules/shared/services/supabase/supabaseClient';
 import { getRandomQuestions, shuffleAnswers, calculatePoints } from 'modules/shared/services/questions.service';
+import allQuestionsData from '../../../../data/questions.json';
 import { useAnsweredQuestions } from 'modules/shared/hooks/useAnsweredQuestions';
 import { useTimer } from 'modules/shared/hooks/useTimer';
 import { useSound } from 'modules/shared/hooks/useSound';
@@ -67,6 +72,9 @@ export default function TournamentPlayPage() {
 
   // Answered questions tracking (localStorage) - shared across all participants in this tournament
   const { answeredIds, markAnswered } = useAnsweredQuestions(tournamentId ?? null);
+
+  // Game session persistence (DB-based for reliability)
+  const [gameSessionId, setGameSessionId] = useState<string | null>(null);
 
   // Game state
   const [questions, setQuestions] = useState<LocalQuestion[]>([]);
@@ -122,6 +130,59 @@ export default function TournamentPlayPage() {
     load();
   }, [tournamentId]);
 
+  // Check for existing game session in DB (page reload recovery)
+  const sessionRecoveredRef = useRef(false);
+  useEffect(() => {
+    if (sessionRecoveredRef.current) return;
+    if (!tournamentId || !allParticipants.length || !selectedParticipant || !currentMatch) return;
+
+    const checkSession = async () => {
+      console.log('[GameSession] Checking for active session...', { matchId: currentMatch.id, participantId: selectedParticipant.id });
+      const session = await getActiveGameSession(currentMatch.id, selectedParticipant.id);
+      console.log('[GameSession] Result:', session);
+
+      if (!session) {
+        console.log('[GameSession] No active session found - will start fresh');
+        return;
+      }
+
+      sessionRecoveredRef.current = true;
+      console.log('[GameSession] Recovering session - question', session.current_index + 1, 'of', session.total_questions, '- score:', session.score);
+
+      // Recover: load the questions from the IDs stored in session
+      const sessionQuestions = session.question_ids
+        .map(id => (allQuestionsData as LocalQuestion[]).find(q => q.id === id))
+        .filter(Boolean) as LocalQuestion[];
+
+      if (sessionQuestions.length === 0) {
+        console.log('[GameSession] Could not recover questions');
+        return;
+      }
+
+      const idx = Math.min(session.current_index, sessionQuestions.length - 1);
+
+      setGameSessionId(session.id);
+      setQuestions(sessionQuestions);
+      setCurrentIndex(idx);
+      setScore(session.score);
+      setCorrectAnswers(session.correct_answers);
+      setStreak(session.streak);
+      setBestStreak(session.best_streak);
+      setConfigTime(session.config_time);
+      setConfigQuestions(session.total_questions);
+      setConfigDifficulty(session.config_difficulty);
+      setAnswers(shuffleAnswers(sessionQuestions[idx]));
+      setSelectedAnswer(null);
+      setShowResult(false);
+      setStep('playing');
+      reset(session.config_time);
+      setTimeout(() => start(), 300);
+    };
+
+    checkSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedParticipant, currentMatch]);
+
   // Find current active match for this participant's team
   const findCurrentMatch = useCallback(async (teamId: string): Promise<TrnMatch | null> => {
     if (!tournamentId) return null;
@@ -163,17 +224,31 @@ export default function TournamentPlayPage() {
 
   // Load team + rival scores for the current match
   const loadMatchScores = useCallback(async (match: TrnMatch, teamId: string) => {
-    const { data } = await supabase
+    // Finished games
+    const { data: finishedData } = await supabase
       .from('trn_match_scores')
       .select('team_id, score')
       .eq('match_id', match.id);
 
     let myTotal = 0;
     let rivalTotal = 0;
-    for (const row of data ?? []) {
+    for (const row of finishedData ?? []) {
       if (row.team_id === teamId) myTotal += row.score;
       else rivalTotal += row.score;
     }
+
+    // Add live scores (only from participants currently playing)
+    const { data: liveData } = await supabase
+      .from('trn_live_scores')
+      .select('team_id, current_score')
+      .eq('match_id', match.id)
+      .eq('is_playing', true);
+
+    for (const row of liveData ?? []) {
+      if (row.team_id === teamId) myTotal += row.current_score;
+      else rivalTotal += row.current_score;
+    }
+
     setTeamScore(myTotal);
     setRivalScore(rivalTotal);
 
@@ -282,6 +357,20 @@ export default function TournamentPlayPage() {
         category_name: 'Mixta',
         is_playing: true,
       }).catch(console.error);
+
+      // Persist session in DB for page reload recovery
+      const sessionId = await createGameSession({
+        tournament_id: tournamentId,
+        match_id: currentMatch.id,
+        team_id: selectedParticipant.team.id,
+        participant_id: selectedParticipant.id,
+        question_ids: q.map(question => question.id),
+        total_questions: configQuestions,
+        config_time: configTime,
+        config_difficulty: configDifficulty,
+      });
+      setGameSessionId(sessionId);
+      console.log('[GameSession] Created new session:', sessionId);
     } catch (err) {
       console.error(err);
     } finally {
@@ -350,6 +439,17 @@ export default function TournamentPlayPage() {
       current_streak: newStreak,
       is_playing: true,
     }).catch(console.error);
+
+    // Persist progress to DB for recovery
+    if (gameSessionId) {
+      updateGameSession(gameSessionId, {
+        current_index: currentIndex,
+        score: newScore,
+        correct_answers: newCorrect,
+        streak: newStreak,
+        best_streak: Math.max(bestStreak, newStreak),
+      }).catch(console.error);
+    }
   };
 
   // Next question
@@ -365,6 +465,17 @@ export default function TournamentPlayPage() {
     setAnswers(shuffleAnswers(questions[nextIdx]));
     reset(configTime);
     setTimeout(() => start(), 100);
+
+    // Persist the new question index to DB
+    if (gameSessionId) {
+      updateGameSession(gameSessionId, {
+        current_index: nextIdx,
+        score,
+        correct_answers: correctAnswers,
+        streak,
+        best_streak: bestStreak,
+      }).catch(console.error);
+    }
   };
 
   // Save score on finish
@@ -375,6 +486,11 @@ export default function TournamentPlayPage() {
 
     hasSavedRef.current = true;
     playVictory();
+
+    // Mark game session as finished in DB
+    if (gameSessionId) {
+      finishGameSession(gameSessionId).catch(console.error);
+    }
 
     upsertTrnLiveScore({
       match_id: currentMatch.id,

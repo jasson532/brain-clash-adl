@@ -65,18 +65,38 @@ export default function TournamentBracketPage() {
       const scores: Record<string, { teamA: number; teamB: number }> = {};
 
       for (const match of inProgressMatches) {
-        const { data } = await supabase
+        // Get completed game scores (trn_match_scores - finished games)
+        const { data: finishedScores } = await supabase
           .from('trn_match_scores')
           .select('team_id, score')
           .eq('match_id', match.id);
 
-        let teamATotal = 0;
-        let teamBTotal = 0;
-        for (const row of data ?? []) {
-          if (row.team_id === match.team_a_id) teamATotal += row.score;
-          else if (row.team_id === match.team_b_id) teamBTotal += row.score;
+        let teamAFinished = 0;
+        let teamBFinished = 0;
+        for (const row of finishedScores ?? []) {
+          if (row.team_id === match.team_a_id) teamAFinished += row.score;
+          else if (row.team_id === match.team_b_id) teamBFinished += row.score;
         }
-        scores[match.id] = { teamA: teamATotal, teamB: teamBTotal };
+
+        // Get live scores ONLY from participants currently playing (not finished)
+        const { data: liveData } = await supabase
+          .from('trn_live_scores')
+          .select('team_id, current_score')
+          .eq('match_id', match.id)
+          .eq('is_playing', true);
+
+        let teamALive = 0;
+        let teamBLive = 0;
+        for (const row of liveData ?? []) {
+          if (row.team_id === match.team_a_id) teamALive += row.current_score;
+          else if (row.team_id === match.team_b_id) teamBLive += row.current_score;
+        }
+
+        // Total = finished games + current games in progress
+        scores[match.id] = {
+          teamA: teamAFinished + teamALive,
+          teamB: teamBFinished + teamBLive,
+        };
       }
       setLiveScores(scores);
     } catch (err) {
@@ -92,8 +112,17 @@ export default function TournamentBracketPage() {
     const unsub1 = subscribeToMatches(id, () => { loadData(); loadLiveScores(); });
     const unsub2 = subscribeToRounds(id, loadData);
 
-    // Subscribe to match scores for live score updates
-    const channel = supabase
+    // Subscribe to live scores (in-progress games) + match scores (finished games)
+    const channelLive = supabase
+      .channel(`trn-live-${id}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'trn_live_scores', filter: `tournament_id=eq.${id}` },
+        () => loadLiveScores(),
+      )
+      .subscribe();
+
+    const channelScores = supabase
       .channel(`trn-scores-${id}`)
       .on(
         'postgres_changes',
@@ -102,7 +131,7 @@ export default function TournamentBracketPage() {
       )
       .subscribe();
 
-    return () => { unsub1(); unsub2(); supabase.removeChannel(channel); };
+    return () => { unsub1(); unsub2(); supabase.removeChannel(channelLive); supabase.removeChannel(channelScores); };
   }, [id, loadData, loadLiveScores]);
 
   const handleFinishMatch = async (matchId: string) => {
