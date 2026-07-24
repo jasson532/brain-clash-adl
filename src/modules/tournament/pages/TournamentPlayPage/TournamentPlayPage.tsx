@@ -587,7 +587,7 @@ export default function TournamentPlayPage() {
         <button className="trnplay__back" onClick={() => navigate(`/tournament/${tournamentId}`)}>← Torneo</button>
         <div className="trnplay__select-card">
           <h2 className="trnplay__select-title">👋 ¿Quién eres?</h2>
-          <p className="trnplay__hint">Busca tu nombre para ingresar al torneo</p>
+          <p className="trnplay__hint">Selecciona tu nombre para entrar a la competencia</p>
 
           <input
             className="trnplay__search-input"
@@ -642,19 +642,32 @@ export default function TournamentPlayPage() {
             </h2>
             <p className="trnplay__player-greeting">Hola, {selectedParticipant.avatar} {selectedParticipant.name}</p>
             {currentMatch && (
-              <p className="trnplay__games-info">
-                🎮 {gamesRemaining > 0 ? `${gamesRemaining} juego${gamesRemaining > 1 ? 's' : ''} restante${gamesRemaining > 1 ? 's' : ''}` : '🚫 Sin juegos restantes'}
-              </p>
+              <div className="trnplay__games-badge">
+                {gamesRemaining > 0 ? (
+                  <>
+                    <span className="trnplay__games-badge-icon">🎮</span>
+                    <span className="trnplay__games-badge-count">{gamesRemaining}</span>
+                    <span className="trnplay__games-badge-text">partida{gamesRemaining > 1 ? 's' : ''} disponible{gamesRemaining > 1 ? 's' : ''}</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="trnplay__games-badge-icon">🚫</span>
+                    <span className="trnplay__games-badge-text">Sin partidas restantes</span>
+                  </>
+                )}
+              </div>
             )}
             {currentMatch && (
               <div className="trnplay__score-panel">
                 <div className="trnplay__score-team trnplay__score-team--mine">
-                  <span className="trnplay__score-label">Tu equipo</span>
+                  <span className="trnplay__score-team-avatar">{selectedParticipant.team.avatar}</span>
+                  <span className="trnplay__score-label" style={{ color: selectedParticipant.team.color }}>{selectedParticipant.team.name}</span>
                   <span className="trnplay__score-value">{teamScore}</span>
                 </div>
-                <span className="trnplay__score-vs">VS</span>
+                <span className="trnplay__score-vs">⚡</span>
                 <div className="trnplay__score-team trnplay__score-team--rival">
-                  <span className="trnplay__score-label">{rivalName}</span>
+                  <span className="trnplay__score-team-avatar">{rivalAvatar || '❓'}</span>
+                  <span className="trnplay__score-label" style={{ color: rivalColor }}>{rivalName || 'Rival'}</span>
                   <span className="trnplay__score-value">{rivalScore}</span>
                 </div>
               </div>
@@ -777,8 +790,22 @@ export default function TournamentPlayPage() {
     return (
       <div className="trnplay">
         {showConfetti && <ConfettiExplosion force={0.6} duration={2500} particleCount={80} />}
+
+        {/* Match info bar */}
+        <div className="trnplay__match-bar">
+          <div className="trnplay__match-bar-team">
+            <span>{selectedParticipant?.team.avatar}</span>
+            <span className="trnplay__match-bar-score" style={{ color: selectedParticipant?.team.color }}>{teamScore}</span>
+          </div>
+          <span className="trnplay__match-bar-vs">⚡</span>
+          <div className="trnplay__match-bar-team">
+            <span className="trnplay__match-bar-score" style={{ color: rivalColor }}>{rivalScore}</span>
+            <span>{rivalAvatar || '❓'}</span>
+          </div>
+        </div>
+
         <div className="trnplay__game-header">
-          <span className="trnplay__question-counter">Pregunta {currentIndex + 1}/{questions.length}</span>
+          <span className="trnplay__question-counter">Pregunta <strong>{currentIndex + 1}</strong> / {questions.length}</span>
           <span className="trnplay__score-display">⭐ {score}</span>
           {streak > 1 && <span className="trnplay__streak">🔥 x{streak}</span>}
         </div>

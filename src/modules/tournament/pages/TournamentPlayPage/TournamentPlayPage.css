@@ -47,9 +47,10 @@
 }
 
 .trnplay__hint {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 1rem;
+  color: var(--text-primary);
   text-align: center;
+  font-weight: 500;
 }
 
 /* Search */
@@ -142,6 +143,34 @@
   margin-top: 0.25rem;
 }
 
+/* Games remaining badge */
+.trnplay__games-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  background: rgba(255, 170, 0, 0.1);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: var(--radius-md);
+  width: 100%;
+}
+.trnplay__games-badge-icon {
+  font-size: 1.3rem;
+}
+.trnplay__games-badge-count {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--warning);
+}
+.trnplay__games-badge-text {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* Score panel */
 .trnplay__score-panel {
   display: flex;
@@ -149,7 +178,7 @@
   gap: 0.75rem;
   width: 100%;
   margin-top: 0.75rem;
-  padding: 0.75rem;
+  padding: 1rem;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -159,15 +188,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.3rem;
+}
+.trnplay__score-team-avatar {
+  font-size: 1.5rem;
 }
 .trnplay__score-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 .trnplay__score-value {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   color: var(--text-primary);
 }
 .trnplay__score-team--mine .trnplay__score-value {
@@ -177,9 +209,7 @@
   color: var(--danger);
 }
 .trnplay__score-vs {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  color: var(--text-muted);
+  font-size: 1.5rem;
 }
 
 /* Edit team form */
@@ -323,15 +353,41 @@
 .trnplay__diff-btn--active { border-color: var(--warning); color: var(--warning); background: rgba(255,170,0,0.1); }
 
 /* Game */
+.trnplay__match-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.trnplay__match-bar-team {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.1rem;
+}
+.trnplay__match-bar-score {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.trnplay__match-bar-vs {
+  font-size: 1.2rem;
+}
+
 .trnplay__game-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 0;
 }
-.trnplay__question-counter { font-family: var(--font-display); font-size: 0.8rem; color: var(--text-muted); }
-.trnplay__score-display { font-family: var(--font-display); font-size: 1rem; color: var(--warning); }
-.trnplay__streak { font-family: var(--font-display); font-size: 0.85rem; color: var(--accent); animation: pulse-live 0.8s infinite; }
+.trnplay__question-counter { font-size: 0.9rem; color: var(--text-secondary); }
+.trnplay__question-counter strong { color: var(--primary); font-size: 1.1rem; }
+.trnplay__score-display { font-family: var(--font-display); font-size: 1.1rem; color: var(--warning); }
+.trnplay__streak { font-family: var(--font-display); font-size: 0.9rem; color: var(--accent); animation: pulse-live 0.8s infinite; }
 
 .trnplay__timer { position: relative; height: 6px; background: var(--bg-card); border-radius: 3px; overflow: visible; }
 .trnplay__timer-bar { height: 100%; border-radius: 3px; transition: width 1s linear; }
